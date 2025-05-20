@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  api:  # THÊM SERVICE API
+    build: ./api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URL=mongodb://mongo:27017/banking
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./solution
+    ports:
+      - "8080:80"  # Giữ nguyên nếu muốn truy cập qua cổng 8080
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:
